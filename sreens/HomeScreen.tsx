@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { filesStore } from '../stores/filesStore'
 
 const HomeScreen = observer(() => {
-
   const increment = () => {
     filesStore.increment();
   }

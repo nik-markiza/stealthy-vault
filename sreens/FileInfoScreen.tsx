@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
 const FileInfoScreen = () => {
-
   return (
     <View style={styles.container}>
       <Text>File Info</Text>

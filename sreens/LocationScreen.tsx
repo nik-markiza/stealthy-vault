@@ -1,7 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 
 const LocationScreen = () => {
-
   return (
     <View style={styles.container}>
       <Text>Location</Text>
