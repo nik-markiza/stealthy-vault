@@ -1,18 +1,3 @@
-import { View, Text, StyleSheet } from "react-native";
+import FileInfoScreen from '../sreens/FileInfoScreen';
 
-export default function FileInfoScreen() {
-
-	return (
-		<View style={styles.container}>
-			<Text>FileInfo Screen</Text>
-		</View>
-	);
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
-});
+export default FileInfoScreen;
