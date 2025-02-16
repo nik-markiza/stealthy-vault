@@ -1,8 +1,7 @@
 import { Drawer } from "expo-router/drawer";
-
 export default function Layout() {
   return (
-    <Drawer>
+    <Drawer screenOptions={{ drawerHideStatusBarOnOpen: true}}>
       <Drawer.Screen 
         name="index" 
         options={{ title: "Home" }} 
@@ -15,7 +14,7 @@ export default function Layout() {
         name="localfile" 
         options={{ title: "Local File" }} 
       />
-			<Drawer.Screen 
+      <Drawer.Screen 
         name="onlineimage" 
         options={{ title: "Online Image" }} 
       />

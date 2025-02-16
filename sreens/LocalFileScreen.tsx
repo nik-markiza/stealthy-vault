@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-const LocationScreen = () => {
+const LocalFileScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Location</Text>
+      <Text>Local File</Text>
     </View>
   );
 }
@@ -16,4 +16,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default LocationScreen;
+export default LocalFileScreen;
