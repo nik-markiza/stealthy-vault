@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-const MapScreen = () => {
+const OnlineImageScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>Map</Text>
+      <Text>Onlin eImage</Text>
     </View>
   );
 }
@@ -16,4 +16,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default MapScreen;
+export default OnlineImageScreen;

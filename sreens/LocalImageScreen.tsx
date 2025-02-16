@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-const FileInfoScreen = () => {
+const LocalFileScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>File Info</Text>
+      <Text>Local File</Text>
     </View>
   );
 }
@@ -16,4 +16,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default FileInfoScreen;
+export default LocalFileScreen;

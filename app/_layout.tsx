@@ -8,16 +8,16 @@ export default function Layout() {
         options={{ title: "Home" }} 
       />
       <Drawer.Screen 
-        name="fileinfo" 
-        options={{ title: "FileInfo" }} 
+        name="localimage" 
+        options={{ title: "Local Image" }} 
       />
       <Drawer.Screen 
-        name="location" 
-        options={{ title: "Location" }} 
+        name="localfile" 
+        options={{ title: "Local File" }} 
       />
 			<Drawer.Screen 
-        name="map" 
-        options={{ title: "Map" }} 
+        name="onlineimage" 
+        options={{ title: "Online Image" }} 
       />
       <Drawer.Screen 
         name="profile" 
