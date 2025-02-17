@@ -3,7 +3,8 @@ import { View, Text, StyleSheet, Image, Pressable, Platform, ScrollView } from "
 import { useFocusEffect, useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
-import * as MediaLibrary from "expo-media-library";
+import { Region } from "react-native-maps";
+import Feather from '@expo/vector-icons/Feather';
 
 const Android = Platform.OS === 'android';
 
@@ -11,15 +12,14 @@ interface MetaData {
   extension: string,
   filePathName: string,
   fileName: string,
-  modificationTime: string,
-  fileSize: string,
+  originalDate: string | null,
+  modificationDate: string | null,
+  fileSize: string | null,
   resolution: string,
-  gpsLocation?: {
-    latitude: string,
-    longitude: string,
-  } | string,
-  cameraMake?: string,
-  cameraModel?: string,
+  gpsLocation: Region | null,
+  device: string | null,
+  model: string | null,
+  software: string | null,
 };
 
 const LocalImageScreen : FC = () => {
@@ -41,6 +41,15 @@ const LocalImageScreen : FC = () => {
     }, [])
   );
 
+  const openMap = () => {
+    // router.push('/map')
+    router.push({
+      pathname: "/map",
+      params: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
+      // params: { ...metadata.gpsLocation },
+    })
+  }
+
   const chooseImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -52,40 +61,39 @@ const LocalImageScreen : FC = () => {
       mediaTypes: ['images'],
       allowsEditing: false,
       quality: 1,
+      exif: true,
+      legacy: true,
     })
 
     if (!image.canceled) {
-      const { uri, width, height, fileName, fileSize, assetId } = image.assets[0];
-
-      let modificationTime, exifData = null;
-      const fileInfo = await FileSystem.getInfoAsync(uri, { size: true });
-
+      const { uri, width, height, fileName, fileSize, exif } = image.assets[0];
 
       const extension = uri.split(".").pop() ?? 'Unknown';
-      const asset = await MediaLibrary.getAssetInfoAsync(assetId || '');
-      modificationTime = new Date(fileInfo.modificationTime * 1000).toLocaleString() ?? 'Unknown';
-
-      if (asset) {
-        exifData = asset.exif || null;
-      }
+      const fileInfo = await FileSystem.getInfoAsync(uri, { size: true });
+      
+      const originalDate = exif?.DateTime || null;
+      const modificationTime = new Date(fileInfo?.modificationTime * 1000)?.toLocaleString() || null;
 
       const metaData = {
         extension,
         filePathName: (uri.split("/").pop())?.replace(`.${extension}`, '') ?? 'Unknown',
         fileName: fileName ? fileName.replace(`.${extension}`, '') : 'Unknown',
-        modificationTime: modificationTime ?? 'Unknown',
-        fileSize: fileSize ? `${(fileSize / 1024).toFixed(2)} KB` : 'Unknown',
+        originalDate: originalDate,
+        modificationDate: modificationTime,
+        fileSize: fileSize ? `${(fileSize / 1024).toFixed(2)} KB` : null,
         resolution: width && height ? `${width} × ${height}` : 'Unknown',
-        cameraMake: exifData?.Make || 'Unknown',
-        cameraModel: exifData?.Model || 'Unknown',
-        gpsLocation: exifData?.GPSLatitude
-          ? { latitude: exifData.GPSLatitude, longitude: exifData.GPSLongitude }
-          : 'No GPS data',
+        device: exif?.Make || null,
+        model: exif?.Model || null,
+        gpsLocation: exif?.GPSLatitude
+          ? { 
+              latitude: exif.GPSLatitude,
+              longitude: exif.GPSLongitude,
+            } 
+          : null,
+        software: exif?.Software || null
       }
 
-      // console.log('FileSystem:', fileInfo);
-      // console.log('ImagePicker:', image.assets[0]);
-      // console.log('MediaLibrary:', asset);
+      // console.log('exif:', exif);
       setImageURI(uri);
       setMetadata(metaData);
     }
@@ -116,16 +124,25 @@ const LocalImageScreen : FC = () => {
         {metadata && (
           <ScrollView contentContainerStyle={styles.contentContainer} style={styles.scrollContaintainre}>
             <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
-            <Text style={styles.infoText}>{`Date: ${metadata.modificationTime}`}</Text>
+            {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
+            <Text style={styles.infoText}>{`Modificatio Date: ${metadata.modificationDate}`}</Text>
             <Text style={styles.infoText}>{`Extension: ${metadata.extension}`}</Text>
             <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
-            <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>
-            <Text style={styles.infoText}>{`Path name: ${metadata.filePathName}`}</Text>
-            <Pressable style={{ backgroundColor: 'orange', paddingVertical: 10 }} onPress={() => router.push('/map')}>
-              <Text style={styles.infoText}>{`Location: ${metadata.gpsLocation}`}</Text>
-            </Pressable>
-            <Text style={styles.infoText}>{`Camera make: ${metadata.cameraMake}`}</Text>
-            <Text style={styles.infoText}>{`Camera model: ${metadata.cameraModel}`}</Text>
+            {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.infoText}>{'Path name: '}</Text>
+              <View style={{ flexShrink: 1, justifyContent: 'center' }}>
+                <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.infoText, { paddingBottom: 2 }]}>{`${metadata.filePathName}`}</Text>
+              </View>
+            </View>
+            {metadata.gpsLocation && (
+              <Pressable style={({ pressed })=> [styles.mapButton, pressed && styles.op7]} onPress={openMap}>
+                <Text style={styles.infoText}>{'Location: found. '}</Text>
+                <Text style={[styles.infoText, {color: '#3742fa'}]}>{'Show on map?'}</Text>
+                <Feather style={{ marginLeft: 5 }} name="map-pin" size={18} color="black" />
+              </Pressable>
+            )} 
+            {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
           </ScrollView>
         )}
       </View>
@@ -176,7 +193,7 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 20,
     fontWeight: '600',
-    paddingBottom: 2,
+    paddingBottom: 4,
   },
   shadow: Android
     ? {
@@ -185,7 +202,7 @@ const styles = StyleSheet.create({
     }
     : {
       shadowColor: '#171717',
-      shadowOffset: {width: -2, height: 4},
+      shadowOffset: { width: -2, height: 4 },
       shadowOpacity: 0.3,
       shadowRadius: 4,
     },
@@ -196,6 +213,14 @@ const styles = StyleSheet.create({
     contentContainer: {
       padding: 10 ,
     },
+    mapButton: {
+      flexDirection: 'row',
+    },
+    mapText: {
+      textDecorationLine: "underline",
+      textDecorationStyle: "solid",
+      textDecorationColor: "#000"
+    }
 });
 
 export default LocalImageScreen;
