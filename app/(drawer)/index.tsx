@@ -1,3 +1,3 @@
-import HomeScreen from '../../sreens/HomeScreen';
+import LocalImageScreen from '../../sreens/LocalImageScreen';
 
-export default HomeScreen;
+export default LocalImageScreen;

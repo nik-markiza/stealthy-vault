@@ -11,15 +11,10 @@ export default function DrawerLayout() {
 		<Drawer
 			screenOptions={SCREEN_OPTIONS}
 			drawerContent={CustomDrawerContent}
-			initialRouteName="localimage"
 		>
 		<Drawer.Screen 
 			name="index" 
-			options={{ title: "Home" }} 
-		/>
-		<Drawer.Screen 
-			name="localimage" 
-			options={{ title: "Local Image" }} 
+			options={{ title: "Local Image", drawerLabel: 'Local Image' }} 
 		/>
 		<Drawer.Screen 
 			name="onlineimage" 

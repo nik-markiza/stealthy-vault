@@ -7,13 +7,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const USER_LOCATION = {
   latitude: 37.78825,
   longitude: -122.4324,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421,
+  latitudeDelta: 0.01,
+  longitudeDelta: 0.01,
 };
 
 const MapScreen:  FC =  () => {
 	const navigation = useNavigation();
   const { __EXPO_ROUTER_key, ...location } = useLocalSearchParams();
+
+  const goBack = () => {
+    navigation.goBack();
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -24,7 +28,7 @@ const MapScreen:  FC =  () => {
           </MapView>
         </View>
         <View style={styles.bottomContainer}>
-          <Button title="Go Back" onPress={() => navigation.goBack()} />
+          <Button title="Go Back" onPress={goBack} />
         </View>
       </View>
     </SafeAreaView>

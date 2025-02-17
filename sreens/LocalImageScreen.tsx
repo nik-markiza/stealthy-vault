@@ -1,110 +1,23 @@
-import { FC, useCallback, useState } from "react";
+import { FC } from "react";
 import { View, Text, StyleSheet, Image, Pressable, Platform, ScrollView } from "react-native";
-import { useFocusEffect, useRouter } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
-import { Region } from "react-native-maps";
+import { useRouter } from "expo-router";
 import Feather from '@expo/vector-icons/Feather';
-import { FileInfo } from "expo-file-system";
+import useImageMetadata from "@/hooks/useImageMetadata";
 
 const Android = Platform.OS === 'android';
 
-interface MetaData {
-  extension: string,
-  filePathName: string,
-  fileName: string,
-  originalDate: string | null,
-  modificationDate: string | null,
-  fileSize: string | null,
-  resolution: string,
-  gpsLocation: Region | null,
-  device: string | null,
-  model: string | null,
-  software: string | null,
-};
-
 const LocalImageScreen : FC = () => {
-  const [imageURI, setImageURI] = useState<null | string>(null);
-  const [metadata, setMetadata] = useState<MetaData | null>(null);
-
   const router = useRouter();
-
-  const onReset = () => {
-    setImageURI(null);
-    setMetadata(null);
-  }
-
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        onReset();
-      }
-    }, [])
-  );
+  const { imageURI, metadata, resetImage, chooseImage } = useImageMetadata();
 
   const openMap = () => {
     router.push({
       pathname: "/map",
-      params: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
+      params: metadata?.gpsLocation ?? {},
     })
   }
 
-  const chooseImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permission to access gallery is required.');
-      return;
-    }
-
-    const image = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: false,
-      quality: 1,
-      exif: true,
-      legacy: true,
-    })
-
-    if (!image.canceled) {
-      const { uri, width, height, fileName, fileSize, exif } = image.assets[0];
-
-      const extension = uri.split(".").pop() ?? 'Unknown';
-      const fileInfo = await FileSystem.getInfoAsync(uri, { size: true });
-
-      if (!fileInfo.exists || fileInfo.isDirectory) {
-        return;
-      }
-      
-      const originalDate = exif?.DateTime || null;
-      const modificationTime = fileInfo?.modificationTime
-        ? new Date(fileInfo.modificationTime * 1000).toLocaleString()
-        : null;
-
-      const metaData = {
-        extension,
-        filePathName: (uri.split("/").pop())?.replace(`.${extension}`, '') ?? 'Unknown',
-        fileName: fileName ? fileName.replace(`.${extension}`, '') : 'Unknown',
-        originalDate: originalDate,
-        modificationDate: modificationTime,
-        fileSize: fileSize ? `${(fileSize / 1024).toFixed(2)} KB` : null,
-        resolution: width && height ? `${width} × ${height}` : 'Unknown',
-        device: exif?.Make || null,
-        model: exif?.Model || null,
-        gpsLocation: exif?.GPSLatitude
-          ? { 
-              latitude: exif.GPSLatitude,
-              longitude: exif.GPSLongitude,
-              latitudeDelta: 0.10,
-              longitudeDelta: 0.10,
-            } 
-          : null,
-        software: exif?.Software || null
-      }
-
-      setImageURI(uri);
-      setMetadata(metaData);
-    }
-  }
-
+  console.log('=========> metadata:', metadata);
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -116,15 +29,15 @@ const LocalImageScreen : FC = () => {
       </View>
       <View style={styles.buttonContainer}>
         <Pressable
-            style={({ pressed }) => [styles.button, pressed &&  styles.op7]}
-            onPress={chooseImage}>
-              <Text style={styles.text}>Choose Image</Text>
-          </Pressable>
-          <Pressable
-            style={({ pressed }) => [styles.button, pressed &&  styles.op7]}
-            onPress={onReset}>
-              <Text style={styles.text}>Reset Image</Text>
-          </Pressable>
+          style={({ pressed }) => [styles.button, pressed &&  styles.op7]}
+          onPress={chooseImage}>
+            <Text style={styles.text}>Choose Image</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [styles.button, pressed &&  styles.op7]}
+          onPress={resetImage}>
+            <Text style={styles.text}>Reset Image</Text>
+        </Pressable>
       </View>
       <View style={styles.infoContainer}>
         {metadata && (
