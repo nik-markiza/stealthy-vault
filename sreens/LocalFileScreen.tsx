@@ -1,10 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 const LocalFileScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>Local File</Text>
-    </View>
+    <View style={styles.container}/>
   );
 }
 

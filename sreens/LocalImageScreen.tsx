@@ -1,9 +1,9 @@
 import { FC, useCallback, useState } from "react";
 import { View, Text, StyleSheet, Image, Pressable, Platform, ScrollView } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
-import { useFocusEffect } from "expo-router";
 
 const Android = Platform.OS === 'android';
 
@@ -25,6 +25,8 @@ interface MetaData {
 const LocalImageScreen : FC = () => {
   const [imageURI, setImageURI] = useState<null | string>(null);
   const [metadata, setMetadata] = useState<MetaData | null>(null);
+
+  const router = useRouter();
 
   const onReset = () => {
     setImageURI(null);
@@ -81,7 +83,6 @@ const LocalImageScreen : FC = () => {
           : 'No GPS data',
       }
 
-      // console.log('------');
       // console.log('FileSystem:', fileInfo);
       // console.log('ImagePicker:', image.assets[0]);
       // console.log('MediaLibrary:', asset);
@@ -120,7 +121,9 @@ const LocalImageScreen : FC = () => {
             <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
             <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>
             <Text style={styles.infoText}>{`Path name: ${metadata.filePathName}`}</Text>
-            <Text style={styles.infoText}>{`Location: ${metadata.gpsLocation}`}</Text>
+            <Pressable style={{ backgroundColor: 'orange', paddingVertical: 10 }} onPress={() => router.push('/map')}>
+              <Text style={styles.infoText}>{`Location: ${metadata.gpsLocation}`}</Text>
+            </Pressable>
             <Text style={styles.infoText}>{`Camera make: ${metadata.cameraMake}`}</Text>
             <Text style={styles.infoText}>{`Camera model: ${metadata.cameraModel}`}</Text>
           </ScrollView>

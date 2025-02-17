@@ -1,10 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 const OnlineImageScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>Onlin eImage</Text>
-    </View>
+    <View style={styles.container}/>
   );
 }
 
