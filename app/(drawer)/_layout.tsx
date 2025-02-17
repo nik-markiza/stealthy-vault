@@ -9,9 +9,10 @@ const SCREEN_OPTIONS = {
 export default function DrawerLayout() {
   return (
 		<Drawer
-      initialRouteName="localimage"
+			screenOptions={SCREEN_OPTIONS}
 			drawerContent={CustomDrawerContent}
-			screenOptions={SCREEN_OPTIONS}>
+			initialRouteName="localimage"
+		>
 		<Drawer.Screen 
 			name="index" 
 			options={{ title: "Home" }} 

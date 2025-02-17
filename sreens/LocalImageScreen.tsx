@@ -5,6 +5,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { Region } from "react-native-maps";
 import Feather from '@expo/vector-icons/Feather';
+import { FileInfo } from "expo-file-system";
 
 const Android = Platform.OS === 'android';
 
@@ -42,11 +43,9 @@ const LocalImageScreen : FC = () => {
   );
 
   const openMap = () => {
-    // router.push('/map')
     router.push({
       pathname: "/map",
       params: { latitude: 37.78825, longitude: -122.4324, latitudeDelta: 0.0922, longitudeDelta: 0.0421 },
-      // params: { ...metadata.gpsLocation },
     })
   }
 
@@ -70,9 +69,15 @@ const LocalImageScreen : FC = () => {
 
       const extension = uri.split(".").pop() ?? 'Unknown';
       const fileInfo = await FileSystem.getInfoAsync(uri, { size: true });
+
+      if (!fileInfo.exists || fileInfo.isDirectory) {
+        return;
+      }
       
       const originalDate = exif?.DateTime || null;
-      const modificationTime = new Date(fileInfo?.modificationTime * 1000)?.toLocaleString() || null;
+      const modificationTime = fileInfo?.modificationTime
+        ? new Date(fileInfo.modificationTime * 1000).toLocaleString()
+        : null;
 
       const metaData = {
         extension,
@@ -88,12 +93,13 @@ const LocalImageScreen : FC = () => {
           ? { 
               latitude: exif.GPSLatitude,
               longitude: exif.GPSLongitude,
+              latitudeDelta: 0.10,
+              longitudeDelta: 0.10,
             } 
           : null,
         software: exif?.Software || null
       }
 
-      // console.log('exif:', exif);
       setImageURI(uri);
       setMetadata(metaData);
     }
