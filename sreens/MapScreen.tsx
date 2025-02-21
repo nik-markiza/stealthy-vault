@@ -1,6 +1,6 @@
-import { View, StyleSheet, Button } from "react-native";
-import { useLocalSearchParams, useNavigation } from "expo-router";
-import { FC } from "react";
+import React, { FC } from 'react';
+import { View, StyleSheet, Button } from 'react-native';
+import { useLocalSearchParams, useNavigation } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -11,20 +11,20 @@ const USER_LOCATION = {
   longitudeDelta: 0.01,
 };
 
-const MapScreen:  FC =  () => {
-	const navigation = useNavigation();
+const MapScreen: FC = () => {
+  const navigation = useNavigation();
   const { __EXPO_ROUTER_key, ...location } = useLocalSearchParams();
 
   const goBack = () => {
     navigation.goBack();
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <View style={styles.mapContainer}>
           <MapView style={styles.map} showsUserLocation initialRegion={USER_LOCATION}>
-            <Marker coordinate={USER_LOCATION}></Marker>
+            <Marker coordinate={USER_LOCATION} />
           </MapView>
         </View>
         <View style={styles.bottomContainer}>

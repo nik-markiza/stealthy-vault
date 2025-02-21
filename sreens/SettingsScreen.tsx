@@ -1,34 +1,39 @@
-import { StyleSheet, View, Text, Pressable } from 'react-native';
-import { observer } from "mobx-react-lite";
-import { filesStore } from '../stores/filesStore'
+import React from 'react';
+import {
+  StyleSheet, View, Text, Pressable,
+} from 'react-native';
+import { observer } from 'mobx-react-lite';
+import { filesStore } from '../stores/filesStore';
 
 const SettingsScreen = observer(() => {
   const increment = () => {
     filesStore.increment();
-  }
+  };
 
   const decrement = () => {
     filesStore.decrement();
-  }
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{`Files counter: ${filesStore.count}`}</Text>
       <View style={styles.buttonsContainer}>
         <Pressable
-          onPress={increment} 
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+          onPress={increment}
+          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+        >
           <Text style={styles.text}>More</Text>
         </Pressable>
         <Pressable
           onPress={decrement}
-          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
+          style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+        >
           <Text style={styles.text}>Less</Text>
         </Pressable>
       </View>
     </View>
   );
-})
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -56,7 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#2d3436',
     fontWeight: '600',
-  }
+  },
 });
 
 export default SettingsScreen;

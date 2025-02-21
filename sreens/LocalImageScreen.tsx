@@ -1,47 +1,55 @@
-import { FC } from "react";
-import { View, Text, StyleSheet, Image, Pressable, Platform, ScrollView } from "react-native";
-import { useRouter } from "expo-router";
+import React, { FC } from 'react';
+import {
+  View, Text, StyleSheet, Image, Pressable, Platform, ScrollView,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
-import useImageMetadata from "@/hooks/useImageMetadata";
+import useImageMetadata from '@/hooks/useImageMetadata';
 
 const Android = Platform.OS === 'android';
 
-const LocalImageScreen : FC = () => {
+const LocalImageScreen: FC = () => {
   const router = useRouter();
-  const { imageURI, metadata, resetImage, chooseImage } = useImageMetadata();
+  const {
+    imageURI, metadata, resetImage, chooseImage,
+  } = useImageMetadata();
 
   const openMap = () => {
     router.push({
-      pathname: "/map",
+      pathname: '/map',
       params: metadata?.gpsLocation ?? {},
-    })
-  }
+    });
+  };
 
-  console.log('=========> metadata:', metadata);
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-      {
-        imageURI 
-          ? <Image resizeMode='contain' style={[styles.image, styles.shadow]} source={{ uri: imageURI }}></Image>
+        {
+        imageURI
+          ? <Image resizeMode="contain" style={[styles.image, styles.shadow]} source={{ uri: imageURI }} />
           : <Text>No Local Image</Text>
       }
       </View>
       <View style={styles.buttonContainer}>
         <Pressable
-          style={({ pressed }) => [styles.button, pressed &&  styles.op7]}
-          onPress={chooseImage}>
-            <Text style={styles.text}>Choose Image</Text>
+          style={({ pressed }) => [styles.button, pressed && styles.op7]}
+          onPress={chooseImage}
+        >
+          <Text style={styles.text}>Choose Image</Text>
         </Pressable>
         <Pressable
-          style={({ pressed }) => [styles.button, pressed &&  styles.op7]}
-          onPress={resetImage}>
-            <Text style={styles.text}>Reset Image</Text>
+          style={({ pressed }) => [styles.button, pressed && styles.op7]}
+          onPress={resetImage}
+        >
+          <Text style={styles.text}>Reset Image</Text>
         </Pressable>
       </View>
       <View style={styles.infoContainer}>
         {metadata && (
-          <ScrollView contentContainerStyle={styles.contentContainer} style={styles.scrollContaintainre}>
+          <ScrollView
+            contentContainerStyle={styles.contentContainer}
+            style={styles.scrollContaintainre}
+          >
             <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
             {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
             <Text style={styles.infoText}>{`Modificatio Date: ${metadata.modificationDate}`}</Text>
@@ -55,19 +63,22 @@ const LocalImageScreen : FC = () => {
               </View>
             </View>
             {metadata.gpsLocation && (
-              <Pressable style={({ pressed })=> [styles.mapButton, pressed && styles.op7]} onPress={openMap}>
+              <Pressable
+                onPress={openMap}
+                style={({ pressed }) => [styles.mapButton, pressed && styles.op7]}
+              >
                 <Text style={styles.infoText}>{'Location: found. '}</Text>
-                <Text style={[styles.infoText, {color: '#3742fa'}]}>{'Show on map?'}</Text>
+                <Text style={[styles.infoText, { color: '#3742fa' }]}>Show on map?</Text>
                 <Feather style={{ marginLeft: 5 }} name="map-pin" size={18} color="black" />
               </Pressable>
-            )} 
+            )}
             {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
           </ScrollView>
         )}
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -125,21 +136,21 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.3,
       shadowRadius: 4,
     },
-    scrollContaintainre: {
-      flex: 1,
-      marginBottom: 20,
-    },
-    contentContainer: {
-      padding: 10 ,
-    },
-    mapButton: {
-      flexDirection: 'row',
-    },
-    mapText: {
-      textDecorationLine: "underline",
-      textDecorationStyle: "solid",
-      textDecorationColor: "#000"
-    }
+  scrollContaintainre: {
+    flex: 1,
+    marginBottom: 20,
+  },
+  contentContainer: {
+    padding: 10,
+  },
+  mapButton: {
+    flexDirection: 'row',
+  },
+  mapText: {
+    textDecorationLine: 'underline',
+    textDecorationStyle: 'solid',
+    textDecorationColor: '#000',
+  },
 });
 
 export default LocalImageScreen;
