@@ -4,6 +4,8 @@ import {
 } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import useIsOnline from '@/hooks/useIsOnline';
+import * as Clipboard from 'expo-clipboard';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HITSLOP = {
   top: 20, bottom: 20, left: 20, right: 20,
@@ -14,16 +16,17 @@ const OnlineImageScreen = () => {
 
   const { isOnline } = useIsOnline();
 
-  const onPaste = (): void => {
+  const onPaste = async (): Promise<void> => {
     if (inputText.length) {
       setInput('');
       return;
     }
-    setInput('https://...jpg');
+    const text = await Clipboard.getStringAsync() || 'https://...jpg';
+    setInput(text);
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView edges={['bottom']} style={styles.container}>
       <View style={styles.inputContainer}>
         <TextInput
           editable={false}
@@ -44,9 +47,10 @@ const OnlineImageScreen = () => {
           <Text>{`Is online: ${isOnline}`}</Text>
         </View>
       </TouchableWithoutFeedback>
-    </View>
+      <View style={styles.bottomContainer} />
+    </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -83,6 +87,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   op: { opacity: 0.7 },
+  bottomContainer: {
+    width: '100%',
+    height: 70,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#dfe4ea',
+  },
 });
 
 export default OnlineImageScreen;

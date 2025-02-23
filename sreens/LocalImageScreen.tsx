@@ -5,8 +5,10 @@ import {
 import { useRouter } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import useImageMetadata from '@/hooks/useImageMetadata';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Android = Platform.OS === 'android';
+const DISABLED_BUTTON = true;
 
 const LocalImageScreen: FC = () => {
   const router = useRouter();
@@ -22,15 +24,15 @@ const LocalImageScreen: FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
+    <SafeAreaView edges={['bottom']} style={styles.container}>
+      <Pressable onPress={chooseImage} style={styles.imageContainer}>
         {
         imageURI
           ? <Image resizeMode="contain" style={[styles.image, styles.shadow]} source={{ uri: imageURI }} />
-          : <Text>No Local Image</Text>
-      }
-      </View>
-      <View style={styles.buttonContainer}>
+          : <Text style={{ fontSize: 24 }}>Press to choose image</Text>
+        }
+      </Pressable>
+      {/* <View style={styles.buttonContainer}>
         <Pressable
           style={({ pressed }) => [styles.button, pressed && styles.op7]}
           onPress={chooseImage}
@@ -43,40 +45,60 @@ const LocalImageScreen: FC = () => {
         >
           <Text style={styles.text}>Reset Image</Text>
         </Pressable>
-      </View>
+      </View> */}
       <View style={styles.infoContainer}>
         {metadata && (
-          <ScrollView
-            contentContainerStyle={styles.contentContainer}
-            style={styles.scrollContaintainre}
-          >
-            <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
-            {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
-            <Text style={styles.infoText}>{`Modificatio Date: ${metadata.modificationDate}`}</Text>
-            <Text style={styles.infoText}>{`Extension: ${metadata.extension}`}</Text>
-            <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
-            {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.infoText}>{'Path name: '}</Text>
-              <View style={{ flexShrink: 1, justifyContent: 'center' }}>
-                <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.infoText, { paddingBottom: 2 }]}>{`${metadata.filePathName}`}</Text>
-              </View>
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          style={styles.scrollContaintainre}
+        >
+          <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
+          {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
+          <Text style={styles.infoText}>{`Modificatio Date: ${metadata.modificationDate}`}</Text>
+          <Text style={styles.infoText}>{`Extension: ${metadata.extension}`}</Text>
+          <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
+          {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.infoText}>{'Path name: '}</Text>
+            <View style={{ flexShrink: 1, justifyContent: 'center' }}>
+              <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.infoText, { paddingBottom: 2 }]}>{`${metadata.filePathName}`}</Text>
             </View>
-            {metadata.gpsLocation && (
-              <Pressable
-                onPress={openMap}
-                style={({ pressed }) => [styles.mapButton, pressed && styles.op7]}
-              >
-                <Text style={styles.infoText}>{'Location: found. '}</Text>
-                <Text style={[styles.infoText, { color: '#3742fa' }]}>Show on map?</Text>
-                <Feather style={{ marginLeft: 5 }} name="map-pin" size={18} color="black" />
-              </Pressable>
-            )}
-            {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
-          </ScrollView>
+          </View>
+          {metadata.gpsLocation && (
+            <Pressable
+              onPress={openMap}
+              style={({ pressed }) => [styles.mapButton, pressed && styles.op7]}
+            >
+              <Text style={styles.infoText}>{'Location: found. '}</Text>
+              <Text style={[styles.infoText, { color: '#3742fa' }]}>Show on map?</Text>
+              <Feather style={{ marginLeft: 5 }} name="map-pin" size={18} color="black" />
+            </Pressable>
+          )}
+          {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
+        </ScrollView>
         )}
       </View>
-    </View>
+      <View style={styles.bottomContainer}>
+        <Pressable
+          disabled={DISABLED_BUTTON}
+          onPress={() => {}}
+          style={({ pressed }) => [
+            styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton
+          ]}
+        >
+          <Text>Delete Metadata</Text>
+        </Pressable>
+        <Pressable
+          disabled={DISABLED_BUTTON}
+          onPress={() => {}}
+          style={({ pressed }) => [
+            styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton
+          ]}
+        >
+          <Text>Save Metadate</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -85,7 +107,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   imageContainer: {
-    flex: 1,
+    width: '100%',
+    height: 350,
     backgroundColor: '#dfe4ea',
     justifyContent: 'center',
     alignItems: 'center',
@@ -138,7 +161,6 @@ const styles = StyleSheet.create({
     },
   scrollContaintainre: {
     flex: 1,
-    marginBottom: 20,
   },
   contentContainer: {
     padding: 10,
@@ -150,6 +172,17 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     textDecorationStyle: 'solid',
     textDecorationColor: '#000',
+  },
+  bottomContainer: {
+    width: '100%',
+    height: 70,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#dfe4ea',
+  },
+  disabledButton: {
+    backgroundColor: '#8395a7',
   },
 });
 

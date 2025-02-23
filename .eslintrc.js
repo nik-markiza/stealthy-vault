@@ -9,6 +9,7 @@ module.exports = {
       namedComponents: ['function-declaration', 'arrow-function'],
       unnamedComponents: 'arrow-function',
     }],
+    'no-use-before-define': ['error', { variables: false }],
     'import/no-unresolved': 0,
     'react/jsx-filename-extension': [1, {
       extensions: [
