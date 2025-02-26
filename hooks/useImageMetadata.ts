@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Region } from 'react-native-maps';
 import * as FileSystem from 'expo-file-system';
 import * as ImagePicker from 'expo-image-picker';
+import { Alert } from 'react-native';
 
 interface MetaData {
   extension: string,
@@ -37,7 +38,7 @@ const useImageMetadata = () => {
   const chooseImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      alert('Permission to access gallery is required.');
+      Alert.alert('Permission to access gallery is required.');
       return;
     }
 

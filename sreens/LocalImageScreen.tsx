@@ -83,7 +83,7 @@ const LocalImageScreen: FC = () => {
           disabled={DISABLED_BUTTON}
           onPress={() => {}}
           style={({ pressed }) => [
-            styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton
+            styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
         >
           <Text>Delete Metadata</Text>
@@ -92,7 +92,7 @@ const LocalImageScreen: FC = () => {
           disabled={DISABLED_BUTTON}
           onPress={() => {}}
           style={({ pressed }) => [
-            styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton
+            styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
         >
           <Text>Save Metadate</Text>
