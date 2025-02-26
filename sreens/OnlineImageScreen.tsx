@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View, StyleSheet, Text, TextInput, TouchableWithoutFeedback, Keyboard, Pressable,
+  Platform, Image,
 } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import useIsOnline from '@/hooks/useIsOnline';
+// import useIsOnline from '@/hooks/useIsOnline';
 import * as Clipboard from 'expo-clipboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -11,19 +12,37 @@ const HITSLOP = {
   top: 20, bottom: 20, left: 20, right: 20,
 };
 
+const Android = Platform.OS === 'android';
+
+const URI = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+// const URI = 'https://d7hftxdivxxvm.cloudfront.net/?quality=80&resize_to=width&src=https%3A%2F%2Fartsy-media-uploads.s3.amazonaws.com%2F2RNK1P0BYVrSCZEy_Sd1Ew%252F3417757448_4a6bdf36ce_o.jpg';
+
 const OnlineImageScreen = () => {
   const [inputText, setInput] = useState('');
-
-  const { isOnline } = useIsOnline();
+  const [isValidImage, setValid] = useState(true);
+  // const { isOnline } = useIsOnline();
 
   const onPaste = async (): Promise<void> => {
     if (inputText.length) {
       setInput('');
       return;
     }
-    const text = await Clipboard.getStringAsync() || 'https://...jpg';
+    const text = await Clipboard.getStringAsync() || URI;
     setInput(text);
   };
+
+  const ImageComponent = useCallback(() => (
+    isValidImage
+      ? (
+        <Image
+          onError={() => setValid(false)}
+          resizeMode="contain"
+          source={{ uri: inputText }}
+          style={[styles.image, styles.shadow]}
+        />
+      )
+      : <Text style={styles.errorText}>URL invalid!</Text>
+  ), [inputText, isValidImage]);
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.container}>
@@ -32,7 +51,7 @@ const OnlineImageScreen = () => {
           editable={false}
           value={inputText}
           style={styles.input}
-          placeholder="paste url"
+          placeholder="..."
         />
         <Pressable
           hitSlop={HITSLOP}
@@ -44,7 +63,10 @@ const OnlineImageScreen = () => {
       </View>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.subContainer}>
-          <Text>{`Is online: ${isOnline}`}</Text>
+          <View style={styles.imageContainer}>
+            { inputText ? <ImageComponent /> : <Text>Paste image URL</Text> }
+          </View>
+          <View style={styles.container} />
         </View>
       </TouchableWithoutFeedback>
       <View style={styles.bottomContainer} />
@@ -64,7 +86,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '100%',
     minHeight: 10,
-    backgroundColor: '#dfe4ea',
+    backgroundColor: 'white',
     padding: 10,
     flexDirection: 'row',
     alignItems: 'center',
@@ -94,6 +116,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     backgroundColor: '#dfe4ea',
+  },
+  image: {
+    padding: 15,
+    height: '100%',
+    width: '100%',
+  },
+  shadow: Android ? {
+    elevation: 20,
+    shadowColor: '#52006A',
+  } : {
+    shadowColor: '#171717',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 350,
+    backgroundColor: '#dfe4ea',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    fontSize: 20,
+    color: 'red',
   },
 });
 
