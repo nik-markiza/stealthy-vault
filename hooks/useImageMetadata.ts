@@ -9,7 +9,6 @@ interface MetaData {
   filePathName: string,
   fileName: string,
   originalDate: string | null,
-  modificationDate: string | null,
   fileSize: string | null,
   resolution: string,
   gpsLocation: Region | null,
@@ -17,6 +16,7 @@ interface MetaData {
   model: string | null,
   software: string | null,
   text: string,
+  exif: any,
 }
 
 const useImageMetadata = () => {
@@ -62,9 +62,6 @@ const useImageMetadata = () => {
 
       const extension = uri.split('.').pop() ?? 'Unknown';
       const originalDate = exif?.DateTime || null;
-      const modificationTime = fileInfo?.modificationTime
-        ? new Date(fileInfo.modificationTime * 1000).toLocaleString()
-        : null;
 
       const filePathName = (uri.split('/').pop())?.replace(`.${extension}`, '') ?? 'Unknown';
       const newFileName = fileName ? fileName.replace(`.${extension}`, '') : 'Unknown';
@@ -87,7 +84,6 @@ const useImageMetadata = () => {
         filePathName,
         fileName: newFileName,
         originalDate,
-        modificationDate: modificationTime,
         fileSize: newFileSize,
         resolution,
         device,
@@ -95,6 +91,7 @@ const useImageMetadata = () => {
         gpsLocation,
         software,
         text: '',
+        exif,
       };
 
       recognizeText();

@@ -38,7 +38,6 @@ const LocalImageScreen: FC = () => {
         >
           <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
           {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
-          <Text style={styles.infoText}>{`Modificatio Date: ${metadata.modificationDate}`}</Text>
           <Text style={styles.infoText}>{`Extension: ${metadata.extension}`}</Text>
           <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
           {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
