@@ -5,6 +5,20 @@ import { Drawer } from 'expo-router/drawer';
 
 const SCREEN_OPTIONS = {
   drawerHideStatusBarOnOpen: true,
+  drawerActiveTintColor: '#1e272e',
+  drawerActiveBackgroundColor: '#7ed6df',
+  drawerLabelStyle: {
+    fontSize: 22,
+    letterSpacing: 2,
+  },
+  drawerItemStyle: {
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  headerTitleStyle: {
+    letterSpacing: 2,
+    fontSize: 22,
+  },
 } as DrawerNavigationOptions;
 
 export default function DrawerLayout() {
