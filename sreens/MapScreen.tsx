@@ -33,7 +33,7 @@ const MapScreen: FC = () => {
       </View>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -12,9 +12,7 @@ const DISABLED_BUTTON = true;
 
 const LocalImageScreen: FC = () => {
   const router = useRouter();
-  const {
-    imageURI, metadata, resetImage, chooseImage,
-  } = useImageMetadata();
+  const { imageURI, metadata, chooseImage } = useImageMetadata();
 
   const openMap = () => {
     router.push({
@@ -32,20 +30,6 @@ const LocalImageScreen: FC = () => {
           : <Text style={{ fontSize: 24 }}>Press to choose image</Text>
         }
       </Pressable>
-      {/* <View style={styles.buttonContainer}>
-        <Pressable
-          style={({ pressed }) => [styles.button, pressed && styles.op7]}
-          onPress={chooseImage}
-        >
-          <Text style={styles.text}>Choose Image</Text>
-        </Pressable>
-        <Pressable
-          style={({ pressed }) => [styles.button, pressed && styles.op7]}
-          onPress={resetImage}
-        >
-          <Text style={styles.text}>Reset Image</Text>
-        </Pressable>
-      </View> */}
       <View style={styles.infoContainer}>
         {metadata && (
         <ScrollView
