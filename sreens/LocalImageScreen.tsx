@@ -8,7 +8,6 @@ import useImageMetadata from '@/hooks/useImageMetadata';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Android = Platform.OS === 'android';
-const DISABLED_BUTTON = true;
 
 const LocalImageScreen: FC = () => {
   const router = useRouter();
@@ -20,6 +19,16 @@ const LocalImageScreen: FC = () => {
       params: metadata?.gpsLocation ?? {},
     });
   };
+
+  const onDelete = () => {
+    console.log('On delete');
+  };
+
+  const onSave = () => {
+    console.log('On save');
+  };
+
+  const DISABLED_BUTTON = !metadata;
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.container}>
@@ -43,7 +52,7 @@ const LocalImageScreen: FC = () => {
           {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
           <View style={{ flexDirection: 'row' }}>
             <Text style={styles.infoText}>{'Path name: '}</Text>
-            <View style={{ flexShrink: 1, justifyContent: 'center' }}>
+            <View style={styles.pathContainer}>
               <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.infoText, { paddingBottom: 2 }]}>{`${metadata.filePathName}`}</Text>
             </View>
           </View>
@@ -54,7 +63,7 @@ const LocalImageScreen: FC = () => {
             >
               <Text style={styles.infoText}>{'Location: found. '}</Text>
               <Text style={[styles.infoText, { color: '#3742fa' }]}>Show on map?</Text>
-              <Feather style={{ marginLeft: 5 }} name="map-pin" size={18} color="black" />
+              <Feather style={styles.featherIcon} name="map-pin" size={18} color="black" />
             </Pressable>
           )}
           {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
@@ -64,7 +73,7 @@ const LocalImageScreen: FC = () => {
       <View style={styles.bottomContainer}>
         <Pressable
           disabled={DISABLED_BUTTON}
-          onPress={() => {}}
+          onPress={onDelete}
           style={({ pressed }) => [
             styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
@@ -73,7 +82,7 @@ const LocalImageScreen: FC = () => {
         </Pressable>
         <Pressable
           disabled={DISABLED_BUTTON}
-          onPress={() => {}}
+          onPress={onSave}
           style={({ pressed }) => [
             styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
@@ -118,9 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  op7: {
-    opacity: 0.7,
-  },
+  op7: { opacity: 0.7 },
   text: {
     fontSize: 22,
     fontWeight: '600',
@@ -142,15 +149,9 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.3,
       shadowRadius: 4,
     },
-  scrollContaintainre: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 10,
-  },
-  mapButton: {
-    flexDirection: 'row',
-  },
+  scrollContaintainre: { flex: 1 },
+  contentContainer: { padding: 10 },
+  mapButton: { flexDirection: 'row' },
   mapText: {
     textDecorationLine: 'underline',
     textDecorationStyle: 'solid',
@@ -166,6 +167,11 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     backgroundColor: '#8395a7',
+  },
+  featherIcon: { marginLeft: 5 },
+  pathContainer: {
+    flexShrink: 1,
+    justifyContent: 'center',
   },
 });
 
