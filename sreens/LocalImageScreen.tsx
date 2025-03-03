@@ -6,6 +6,8 @@ import { useRouter } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import useImageMetadata from '@/hooks/useImageMetadata';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as MediaLibrary from 'expo-media-library';
+import { manipulateAsync } from 'expo-image-manipulator';
 
 const Android = Platform.OS === 'android';
 
@@ -20,8 +22,20 @@ const LocalImageScreen: FC = () => {
     });
   };
 
-  const onDelete = () => {
-    console.log('On delete');
+  const onDelete = async (): Promise<void> => {
+    if (imageURI) {
+      try {
+        const manipulatedImage = await manipulateAsync(
+          imageURI,
+          [],
+          { compress: 1, format: 'jpeg' },
+        );
+        const asset = await MediaLibrary.createAssetAsync(manipulatedImage.uri);
+        await MediaLibrary.createAlbumAsync('MyApp', asset, false);
+      } catch (error) {
+        console.error('EXIF delete error:', error);
+      }
+    }
   };
 
   const onSave = () => {
