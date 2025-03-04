@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import {
   View, Text, StyleSheet, Image, Pressable, Platform, ScrollView,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
@@ -8,6 +9,7 @@ import useImageMetadata from '@/hooks/useImageMetadata';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as MediaLibrary from 'expo-media-library';
 import { manipulateAsync } from 'expo-image-manipulator';
+import * as Sharing from 'expo-sharing';
 
 const Android = Platform.OS === 'android';
 
@@ -38,8 +40,17 @@ const LocalImageScreen: FC = () => {
     }
   };
 
-  const onSave = () => {
-    console.log('On save');
+  const handleShare = async () => {
+    try {
+      const message = `${metadata}`;
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(message);
+      } else {
+        Alert.alert('Sharing is not available on this device.');
+      }
+    } catch (error) {
+      console.error('Error sharing message: ', error);
+    }
   };
 
   const DISABLED_BUTTON = !metadata;
@@ -96,12 +107,12 @@ const LocalImageScreen: FC = () => {
         </Pressable>
         <Pressable
           disabled={DISABLED_BUTTON}
-          onPress={onSave}
+          onPress={handleShare}
           style={({ pressed }) => [
             styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
         >
-          <Text>Save Metadate</Text>
+          <Text>Share Metadate</Text>
         </Pressable>
       </View>
     </SafeAreaView>
