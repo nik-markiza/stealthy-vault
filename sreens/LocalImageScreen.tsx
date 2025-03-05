@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import {
   View, Text, StyleSheet, Image, Pressable, Platform, ScrollView,
-  Alert,
+  Alert, Share,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
@@ -9,7 +9,7 @@ import useImageMetadata from '@/hooks/useImageMetadata';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as MediaLibrary from 'expo-media-library';
 import { manipulateAsync } from 'expo-image-manipulator';
-import * as Sharing from 'expo-sharing';
+// import * as Sharing from 'expo-sharing';
 
 const Android = Platform.OS === 'android';
 
@@ -40,16 +40,35 @@ const LocalImageScreen: FC = () => {
     }
   };
 
-  const handleShare = async () => {
+  // const handleShare = async () => {
+  //   try {
+  //     const message = JSON.stringify(metadata);
+  //     if (await Sharing.isAvailableAsync()) {
+  //       await Sharing.shareAsync(message);
+  //     } else {
+  //       Alert.alert('Sharing is not available on this device.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sharing message: ', error);
+  //   }
+  // };
+
+  const onShare = async () => {
     try {
-      const message = `${metadata}`;
-      if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(message);
-      } else {
-        Alert.alert('Sharing is not available on this device.');
+      const result = await Share.share({
+        message: JSON.stringify(metadata),
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
       }
-    } catch (error) {
-      console.error('Error sharing message: ', error);
+    } catch (error: any) {
+      Alert.alert(error.message);
     }
   };
 
@@ -107,7 +126,7 @@ const LocalImageScreen: FC = () => {
         </Pressable>
         <Pressable
           disabled={DISABLED_BUTTON}
-          onPress={handleShare}
+          onPress={onShare}
           style={({ pressed }) => [
             styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
