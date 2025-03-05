@@ -9,7 +9,7 @@ import useImageMetadata from '@/hooks/useImageMetadata';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as MediaLibrary from 'expo-media-library';
 import { manipulateAsync } from 'expo-image-manipulator';
-// import * as Sharing from 'expo-sharing';
+import * as Sharing from 'expo-sharing';
 
 const Android = Platform.OS === 'android';
 
@@ -24,6 +24,19 @@ const LocalImageScreen: FC = () => {
     });
   };
 
+  const handleShare = async (uri: string) => {
+    try {
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri);
+      } else {
+        Alert.alert('Sharing is not available on this device.');
+      }
+    } catch (error) {
+      console.error('Error sharing message: ', error);
+      Alert.alert('Share file error.');
+    }
+  };
+
   const onDelete = async (): Promise<void> => {
     if (imageURI) {
       try {
@@ -34,24 +47,13 @@ const LocalImageScreen: FC = () => {
         );
         const asset = await MediaLibrary.createAssetAsync(manipulatedImage.uri);
         await MediaLibrary.createAlbumAsync('MyApp', asset, false);
+        handleShare('...');
       } catch (error) {
         console.error('EXIF delete error:', error);
+        Alert.alert('EXIF delete error.');
       }
     }
   };
-
-  // const handleShare = async () => {
-  //   try {
-  //     const message = JSON.stringify(metadata);
-  //     if (await Sharing.isAvailableAsync()) {
-  //       await Sharing.shareAsync(message);
-  //     } else {
-  //       Alert.alert('Sharing is not available on this device.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error sharing message: ', error);
-  //   }
-  // };
 
   const onShare = async () => {
     try {
@@ -89,28 +91,26 @@ const LocalImageScreen: FC = () => {
           contentContainerStyle={styles.contentContainer}
           style={styles.scrollContaintainre}
         >
-          <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
-          {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
-          <Text style={styles.infoText}>{`Extension: ${metadata.extension}`}</Text>
-          <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
-          {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.infoText}>{'Path name: '}</Text>
-            <View style={styles.pathContainer}>
-              <Text numberOfLines={1} adjustsFontSizeToFit style={[styles.infoText, { paddingBottom: 2 }]}>{`${metadata.filePathName}`}</Text>
-            </View>
+          <View style={{ borderWidth: 2, borderColor: 'black', paddingVertical: 5, borderRadius: 5, marginHorizontal: 5 }}>
+            <Text style={{ alignSelf: 'center', fontSize: 20}}>Sensetive Data</Text>
+            <View style={{ backgroundColor: 'black', width: '100%', height: 2, marginTop: 5 }} />
+            <Text style={styles.infoText}>{`Name: ${metadata.fileName}`}</Text>
+            {metadata.originalDate && <Text style={styles.infoText}>{`Original date: ${metadata.originalDate}`}</Text>}
+            <Text style={styles.infoText}>{`Extension: ${metadata.extension}`}</Text>
+            <Text style={styles.infoText}>{`Size: ${metadata.fileSize}`}</Text>
+            {metadata.resolution && <Text style={styles.infoText}>{`Resolution: ${metadata.resolution}`}</Text>}
+            {metadata.gpsLocation && (
+              <Pressable
+                onPress={openMap}
+                style={({ pressed }) => [styles.mapButton, pressed && styles.op7]}
+              >
+                <Text style={styles.infoText}>{'Location: found. '}</Text>
+                <Text style={[styles.infoText, { color: '#3742fa' }]}>Show on map?</Text>
+                <Feather style={styles.featherIcon} name="map-pin" size={18} color="black" />
+              </Pressable>
+            )}
+            {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
           </View>
-          {metadata.gpsLocation && (
-            <Pressable
-              onPress={openMap}
-              style={({ pressed }) => [styles.mapButton, pressed && styles.op7]}
-            >
-              <Text style={styles.infoText}>{'Location: found. '}</Text>
-              <Text style={[styles.infoText, { color: '#3742fa' }]}>Show on map?</Text>
-              <Feather style={styles.featherIcon} name="map-pin" size={18} color="black" />
-            </Pressable>
-          )}
-          {metadata.device && <Text style={styles.infoText}>{`Device: ${metadata.device} ${metadata.model} (${metadata.software})`}</Text>}
         </ScrollView>
         )}
       </View>
