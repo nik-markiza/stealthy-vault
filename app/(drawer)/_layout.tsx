@@ -40,8 +40,8 @@ export default function DrawerLayout() {
         options={{ title: 'Local File' }}
       />
       <Drawer.Screen
-        name="profile"
-        options={{ title: 'Profile' }}
+        name="camera"
+        options={{ title: 'Camera' }}
       />
       <Drawer.Screen
         name="settings"

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { View, StyleSheet } from 'react-native';
 
-const ProfileScreen : FC = () => (
+const CameraScreen : FC = () => (
   <View style={styles.container} />
 );
 
@@ -13,4 +13,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default CameraScreen;
