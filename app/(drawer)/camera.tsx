@@ -1,3 +1,3 @@
-import CameraScreen from '../../sreens/CameraScreen';
+import CameraScreen from '../../screens/CameraScreen';
 
 export default CameraScreen;

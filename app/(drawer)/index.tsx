@@ -1,3 +1,3 @@
-import LocalImageScreen from '../../sreens/LocalImageScreen';
+import LocalImageScreen from '../../screens/LocalImageScreen';
 
 export default LocalImageScreen;

@@ -1,3 +1,3 @@
-import LocalFileScreen from '../../sreens/LocalFileScreen';
+import LocalFileScreen from '../../screens/LocalFileScreen';
 
 export default LocalFileScreen;

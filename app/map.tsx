@@ -1,3 +1,3 @@
-import MapScreen from '../sreens/MapScreen';
+import MapScreen from '../screens/MapScreen';
 
 export default MapScreen;
