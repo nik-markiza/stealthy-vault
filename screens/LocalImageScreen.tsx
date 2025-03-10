@@ -20,7 +20,7 @@ const LocalImageScreen: FC = () => {
   const openMap = useCallback(() => {
     router.push({
       pathname: '/map',
-      params: metadata?.gpsLocation ?? {},
+      params: metadata?.gpsLocation || undefined,
     });
   }, [metadata?.gpsLocation, router]);
 
@@ -147,7 +147,7 @@ const LocalImageScreen: FC = () => {
             styles.button, pressed && styles.op7, DISABLED_BUTTON && styles.disabledButton,
           ]}
         >
-          <Text>Share Metadate</Text>
+          <Text>Share Metadata</Text>
         </Pressable>
       </View>
     </SafeAreaView>

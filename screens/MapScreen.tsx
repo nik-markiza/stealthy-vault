@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import MapView, { Marker } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const USER_LOCATION = {
+const DEFAULT_LOCATION = {
   latitude: 37.78825,
   longitude: -122.4324,
   latitudeDelta: 0.01,
@@ -13,7 +13,18 @@ const USER_LOCATION = {
 
 const MapScreen: FC = () => {
   const navigation = useNavigation();
-  const { __EXPO_ROUTER_key, ...location } = useLocalSearchParams();
+  const { __EXPO_ROUTER_key, latitude, longitude } = useLocalSearchParams();
+
+  const region = useMemo(() => {
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+
+    return !Number.isNaN(lat) && !Number.isNaN(lon)
+      ? {
+        latitude: lat, longitude: lon, latitudeDelta: 0.01, longitudeDelta: 0.01,
+      }
+      : DEFAULT_LOCATION;
+  }, [latitude, longitude]);
 
   const goBack = () => {
     navigation.goBack();
@@ -23,8 +34,8 @@ const MapScreen: FC = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
         <View style={styles.mapContainer}>
-          <MapView style={styles.map} showsUserLocation initialRegion={USER_LOCATION}>
-            <Marker coordinate={USER_LOCATION} />
+          <MapView style={styles.map} showsUserLocation initialRegion={region}>
+            <Marker coordinate={region} />
           </MapView>
         </View>
         <View style={styles.bottomContainer}>
@@ -44,7 +55,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'orange',
   },
   bottomContainer: {
-    flex: 1,
+    height: 70,
     backgroundColor: '#dfe4ea',
     justifyContent: 'center',
     alignItems: 'center',
