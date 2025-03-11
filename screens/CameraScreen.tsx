@@ -28,14 +28,20 @@ const CameraScreen: FC = () => {
   }
 
   const toggleCameraFacing = () => {
+    if (scanned) {
+      setScanned(false);
+      setScannedData('');
+    }
     setFacing((current) => (current === 'back' ? 'front' : 'back'));
   };
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     if (!scanned) {
-      setScanned(true);
-      setScannedData(data);
-      setTimeout(() => setScanned(false), 2000);
+      if (data !== scannedData) {
+        setScanned(true);
+        setScannedData(data);
+        setTimeout(() => setScanned(false), 2000);
+      }
     }
   };
 
@@ -46,7 +52,7 @@ const CameraScreen: FC = () => {
           barcodeScannerSettings={{
             barcodeTypes: ['qr'],
           }}
-          onBarCodeScanned={scannedData ? undefined : handleBarCodeScanned}
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
           style={styles.camera}
           facing={facing}
         />
@@ -94,7 +100,7 @@ const styles = StyleSheet.create({
   scanned: {
     width: '100%',
     height: 80,
-    backgroundColor: 'orange',
+    backgroundColor: '#d1ccc0',
     justifyContent: 'center',
     alignItems: 'center',
   },
