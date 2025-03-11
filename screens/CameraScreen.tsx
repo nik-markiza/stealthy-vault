@@ -7,6 +7,8 @@ import {
 const CameraScreen: FC = () => {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
+  const [scannedData, setScannedData] = useState<string>('');
+  const [scanned, setScanned] = useState(false);
 
   if (!permission) {
     return (
@@ -29,12 +31,30 @@ const CameraScreen: FC = () => {
     setFacing((current) => (current === 'back' ? 'front' : 'back'));
   };
 
+  const handleBarCodeScanned = ({ data }: { data: string }) => {
+    if (!scanned) {
+      setScanned(true);
+      setScannedData(data);
+      setTimeout(() => setScanned(false), 2000);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <CameraView style={styles.camera} facing={facing} />
+        <CameraView
+          barcodeScannerSettings={{
+            barcodeTypes: ['qr'],
+          }}
+          onBarCodeScanned={scannedData ? undefined : handleBarCodeScanned}
+          style={styles.camera}
+          facing={facing}
+        />
       </View>
       <View style={styles.container}>
+        <View style={styles.scanned}>
+          <Text>{scannedData}</Text>
+        </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
@@ -70,6 +90,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'black',
+  },
+  scanned: {
+    width: '100%',
+    height: 80,
+    backgroundColor: 'orange',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
