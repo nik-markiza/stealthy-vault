@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-const GOOGLE_CLOUD_VISION_API_KEY = 'YOUR_GOOGLE_CLOUD_VISION_API_KEY';
+const GOOGLE_CLOUD_VISION_API_KEY = '...';
 
 export interface LabelAnnotation {
   description: string;
