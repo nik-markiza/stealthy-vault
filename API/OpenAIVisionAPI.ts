@@ -1,9 +1,8 @@
-// api/openaiVisionApi.ts
 import axios from 'axios';
 
 const OPENAI_API_KEY = '...';
 
-export const analyzeImageWithOpenAI = async (base64Image: string): Promise<string> => {
+const analyzeImageWithOpenAI = async (base64Image: string): Promise<string> => {
   try {
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
@@ -12,12 +11,12 @@ export const analyzeImageWithOpenAI = async (base64Image: string): Promise<strin
         messages: [
           {
             role: 'system',
-            content: 'Ты - AI, который анализирует изображения и даёт описание.',
+            content: 'You are AI, you analize picture.',
           },
           {
             role: 'user',
             content: [
-              { type: 'text', text: 'Что изображено на фото?' },
+              { type: 'text', text: 'What\'s on picture?' },
               {
                 type: 'image_url',
                 image_url: `data:image/jpeg;base64,${base64Image}`,
@@ -37,7 +36,9 @@ export const analyzeImageWithOpenAI = async (base64Image: string): Promise<strin
 
     return response.data.choices[0].message.content;
   } catch (error) {
-    console.error('Ошибка анализа изображения:', error);
-    return 'Ошибка при обработке изображения.';
+    console.error('analyze Image error:', error);
+    return 'analyze Image error';
   }
 };
+
+export default analyzeImageWithOpenAI;
